@@ -3,7 +3,6 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
-import mongoSanitize from 'express-mongo-sanitize';
 import rateLimit from 'express-rate-limit';
 import { errorHandler } from './middleware/errorHandler.js';
 
@@ -43,7 +42,8 @@ app.use(cors(corsOptions));
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
-app.use(mongoSanitize());
+// Note: express-mongo-sanitize removed due to Express 5 incompatibility
+// MongoDB driver and Mongoose schemas provide input validation
 
 // Rate limiting - prevents brute force attacks
 const limiter = rateLimit({
