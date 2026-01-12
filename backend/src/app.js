@@ -23,8 +23,26 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
+// CORS configuration - supports multiple origins for Vercel deployments
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://gig-flow-kappa.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin matches allowed origins or Vercel preview pattern
+    if (allowedOrigins.includes(origin) || origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 
