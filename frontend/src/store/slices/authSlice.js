@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { API_URL } from '../../config/api';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const AUTH_URL = `${API_URL}/auth`;
 
 // Register user
 export const register = createAsyncThunk('auth/register', async (user, thunkAPI) => {
   try {
-    const response = await axios.post(API_URL + '/register', user);
+    const response = await axios.post(AUTH_URL + '/register', user);
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }
@@ -20,7 +21,7 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
 // Login user
 export const login = createAsyncThunk('auth/login', async (user, thunkAPI) => {
   try {
-    const response = await axios.post(API_URL + '/login', user);
+    const response = await axios.post(AUTH_URL + '/login', user);
     if (response.data) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }

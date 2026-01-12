@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { ArrowLeft, DollarSign, User, Clock, CheckCircle, XCircle, Send, Award } from 'lucide-react';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config/api';
 
 const GigDetail = () => {
     const { id } = useParams();

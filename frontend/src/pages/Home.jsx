@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Briefcase, Clock, DollarSign, Users, TrendingUp, Zap, Search, X } from 'lucide-react';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config/api';
 
 const Home = () => {
     const [gigs, setGigs] = useState([]);

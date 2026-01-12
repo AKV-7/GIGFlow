@@ -4,8 +4,7 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Briefcase, DollarSign, FileText, ArrowLeft } from 'lucide-react';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_URL } from '../config/api';
 
 const CreateGig = () => {
     const navigate = useNavigate();
