@@ -11,19 +11,7 @@ dotenv.config();
 
 const app = express();
 
-// Security
-app.use(helmet());
-app.use(mongoSanitize()); // Prevents NoSQL injection
-
-// Rate limiting - prevents brute force attacks
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: { message: 'Too many requests, please try again later.' }
-});
-app.use('/api/', limiter);
-
-// CORS configuration - supports multiple origins for Vercel deployments
+// CORS configuration - MUST BE FIRST (before other middleware)
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'https://gig-flow-kappa.vercel.app',
@@ -31,7 +19,7 @@ const allowedOrigins = [
   'http://localhost:3000'
 ].filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
@@ -43,8 +31,28 @@ app.use(cors({
     
     callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+// Enable CORS preflight for all routes
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+
+// Security middleware (after CORS)
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
+app.use(mongoSanitize());
+
+// Rate limiting - prevents brute force attacks
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { message: 'Too many requests, please try again later.' }
+});
+app.use('/api/', limiter);
 
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
